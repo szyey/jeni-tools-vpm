@@ -1,7 +1,7 @@
 # Personal VPM repository builder
 
 `tools/build_vpm.py` packages the Jeni tools from the external `VRC_Tools` source of truth.
-The verification copies live in `MCP Project/Packages/com.suzuki-y0.jeni.*`; missing `.meta` GUIDs
+The verification copies live in `MCP Project/Packages/com.jenitool.*`; missing `.meta` GUIDs
 are taken from there or from `metadata/`.
 It writes only to `dist-ready/`; it never edits or synchronizes the Unity project.
 The public index currently publishes 12 package IDs and 68 versions after
@@ -95,7 +95,7 @@ The source-side static audit and staged Unity acceptance plan are documented in
 
 ALCOM and VCC share the repository list. After adding the URL once, use ALCOM's
 project manager to install or update the package versions; the latest unified lilToon
-release is `com.suzuki-y0.jeni.liltoon-material-override@0.2.11`. Since `0.2.0`, Orbit contains only
+release is `com.jenitool.liltoon-material-override@0.2.11`. Since `0.2.0`, Orbit contains only
 the Orbit Asset Generator; Eye Wobble moved to Avatar Reactive Motion. The generic package menus use English,
 descriptive paths under `Tools/Jeni Tools` (with matching
 `GameObject`, `Assets/Create`, and `Jeni Tools` component roots where applicable).
@@ -104,7 +104,7 @@ Register the NDMF, Modular Avatar, lilToon, and other external repositories in e
 
 ## lilToon package 9/10 integration
 
-`com.suzuki-y0.jeni.liltoon-material-override@0.2.11` is the canonical unified
+`com.jenitool.liltoon-material-override@0.2.11` is the canonical unified
 release. It includes the former Preset Applicator Runtime and Editor sources
 under `Legacy/PresetApplicator/` and has no internal dependency on standalone
 package 10. Package 10 is retired and absent from the public index; migrate any
