@@ -1,5 +1,5 @@
 {
-  "version": "0.2.4",
+  "version": "0.1.6",
   "packages": [
     {
       "name": "com.jenitool.avatar-prefab-material-exporter",
@@ -72,6 +72,12 @@
       "version": "0.2.4",
       "url": "https://github.com/szyey/jeni-tools-vpm/releases/download/com.jenitool.orbit-0.2.4/com.jenitool.orbit-0.2.4.zip",
       "zipSHA256": "c14ebf2bfb1d0176b28e94ffddffa124a52a3084929afc1e63825fe1c974525c"
+    },
+    {
+      "name": "com.jenitool.eye-texture-adapter",
+      "version": "0.1.6",
+      "url": "https://github.com/szyey/jeni-tools-vpm/releases/download/com.jenitool.eye-texture-adapter-0.1.6/com.jenitool.eye-texture-adapter-0.1.6.zip",
+      "zipSHA256": "e22367198913ad2cd3373337d16c296f1388451d84b7e9ed0e215f861fdda459"
     }
   ]
 }

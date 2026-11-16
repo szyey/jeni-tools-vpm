@@ -128,6 +128,22 @@
           },
           "url": "https://github.com/szyey/jeni-tools-vpm/releases/download/com.jenitool.eye-texture-adapter-0.1.5/com.jenitool.eye-texture-adapter-0.1.5.zip",
           "zipSHA256": "5801f4329b55bf43792014a7ad24525ae7326c8bf8119f730600ad993afc88d7"
+        },
+        "0.1.6": {
+          "name": "com.jenitool.eye-texture-adapter",
+          "displayName": "Eye Texture Adapter",
+          "version": "0.1.6",
+          "description": "Jeni Tools - Eye Texture Adapter.",
+          "unity": "2022.3",
+          "author": {
+            "name": "szyey",
+            "url": "https://github.com/szyey"
+          },
+          "vpmDependencies": {
+            "nadena.dev.ndmf": ">=1.14.8 <2.0.0"
+          },
+          "url": "https://github.com/szyey/jeni-tools-vpm/releases/download/com.jenitool.eye-texture-adapter-0.1.6/com.jenitool.eye-texture-adapter-0.1.6.zip",
+          "zipSHA256": "e22367198913ad2cd3373337d16c296f1388451d84b7e9ed0e215f861fdda459"
         }
       }
     },
