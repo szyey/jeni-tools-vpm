@@ -3,6 +3,7 @@ import io
 import json
 import unittest
 from unittest.mock import patch
+from urllib.parse import quote
 import zipfile
 
 from check_catalog import (
@@ -23,7 +24,7 @@ def release(version="1.0.0"):
     archive = io.BytesIO()
     with zipfile.ZipFile(archive, "w") as output:
         output.writestr("package.json", json.dumps(package))
-    tag = f"{NAME}-{version}"
+    tag = quote(f"{NAME}-{version}", safe="")
     data = archive.getvalue()
     entry = dict(package, url=f"{RELEASES}/{tag}/{tag}.zip",
                  zipSHA256=hashlib.sha256(data).hexdigest())
@@ -59,6 +60,7 @@ class CatalogTests(unittest.TestCase):
     def test_catalog_accepts_semver_prerelease_and_build_metadata(self):
         version = "1.0.0-alpha.1+build.007"
         entry, _ = release(version)
+        self.assertEqual(entry["url"].count("%2B"), 2)
         self.assertEqual(catalog_entries(index(entry)), {(NAME, version): entry})
 
     def test_manifest_rejects_duplicate_missing_or_mismatched_rows(self):

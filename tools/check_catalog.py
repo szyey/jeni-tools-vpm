@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 import subprocess
 import sys
+from urllib.parse import quote
 from urllib.request import urlopen
 import zipfile
 
@@ -46,7 +47,8 @@ def catalog_entries(index):
             if (entry["name"], entry["version"]) != key:
                 raise ValueError(f"Catalog key differs from its entry: {tag_for(key)}")
             tag = tag_for(key)
-            if entry["url"] != f"{RELEASES}/{tag}/{tag}.zip":
+            encoded = quote(tag, safe="")
+            if entry["url"] != f"{RELEASES}/{encoded}/{encoded}.zip":
                 raise ValueError(f"Unexpected release URL: {tag}")
             if not re.fullmatch(r"[0-9a-f]{64}", entry["zipSHA256"]):
                 raise ValueError(f"Invalid SHA-256: {tag}")
