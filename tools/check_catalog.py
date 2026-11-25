@@ -14,6 +14,13 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parent.parent
 RELEASES = "https://github.com/szyey/jeni-tools-vpm/releases/download"
+NUMBER = r"(?:0|[1-9][0-9]*)"
+PRERELEASE = rf"(?:{NUMBER}|[0-9]*[A-Za-z-][0-9A-Za-z-]*)"
+SEMVER = re.compile(
+    rf"{NUMBER}\.{NUMBER}\.{NUMBER}"
+    rf"(?:-{PRERELEASE}(?:\.{PRERELEASE})*)?"
+    r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?"
+)
 
 
 def tag_for(key):
@@ -34,7 +41,7 @@ def catalog_entries(index):
             raise ValueError(f"No versions for {name}")
         for version, entry in package["versions"].items():
             key = name, version
-            if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(?:-[0-9A-Za-z.-]+)?", version):
+            if not SEMVER.fullmatch(version):
                 raise ValueError(f"Invalid version: {tag_for(key)}")
             if (entry["name"], entry["version"]) != key:
                 raise ValueError(f"Catalog key differs from its entry: {tag_for(key)}")

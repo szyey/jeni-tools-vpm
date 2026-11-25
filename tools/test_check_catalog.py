@@ -51,6 +51,16 @@ class CatalogTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Unexpected release URL"):
             catalog_entries(index(dict(self.entry, url="https://example.invalid/artifact.zip")))
 
+    def test_catalog_rejects_invalid_semver(self):
+        for version in ("01.0.0", "1.02.0", "1.0.03", "1.0.0-01", "1.0.0-alpha..1", "1.0.0+"):
+            with self.subTest(version=version), self.assertRaisesRegex(ValueError, "Invalid version"):
+                catalog_entries(index(release(version)[0]))
+
+    def test_catalog_accepts_semver_prerelease_and_build_metadata(self):
+        version = "1.0.0-alpha.1+build.007"
+        entry, _ = release(version)
+        self.assertEqual(catalog_entries(index(entry)), {(NAME, version): entry})
+
     def test_manifest_rejects_duplicate_missing_or_mismatched_rows(self):
         for candidate in (manifest(self.entry, self.entry), manifest(),
                           manifest(dict(self.entry, zipSHA256="0" * 64))):
