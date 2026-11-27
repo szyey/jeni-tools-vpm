@@ -5,6 +5,13 @@ canonical `VRC_Tools` sources, Unity verification project, and metadata snapshot
 are in the maintainer's external workspace, not this checkout.
 See [the release checklist](#release-checklist) for what can be verified here.
 
+`tools/build_vpm.py` in that workspace builds from `VRC_Tools` into `dist-ready/`.
+For verification and missing `.meta` files, it uses the first existing copy in
+`MCP Project/Packages/com.jenitool.<tool>`, `MCP Project/Packages/com.suzuki-y0.jeni.<tool>`,
+or `MCP Project/Assets/Jeni_tool/<tool>`, with `metadata/` as a fallback for GUIDs.
+As of 2026-11-25, the MCP Project still uses the legacy embedded package IDs.
+The builder reports which copy it used and does not modify or migrate that project.
+
 The public index is `https://raw.githubusercontent.com/szyey/jeni-tools-vpm/main/index.json`.
 New projects should install the unified `liltoon-material-override` package,
 which contains the Preset Applicator. Version `0.2.6` clarifies the single Material Override entry,
@@ -23,9 +30,13 @@ Use VCC or ALCOM to see the latest version for each package in the
 
 ## Release notes
 
+- **2026-11-27:** `eye-texture-adapter@0.1.7`. The tool is one tabbed window
+  (Profile Maker and Transform) that opens on Profile Maker. Profiles start from
+  a two-eye or one-eye texture; after the first eye, the second is mirrored by
+  shape with or without adjusting. Explanations are shorter and the save hint
+  names the unfinished eye. Includes the warp mesh fix from 0.1.6.
 - **2026-11-16:** `eye-texture-adapter@0.1.6`. Fixes warp meshes not being
   drawn, which could make the converted texture fully transparent.
-
 - **2026-11-08:** `avatar-reactive-motion@0.1.4`. Transform motions merge into FX so they can read the VRCFT
   template's values; rotation uses quaternions and Generated PhysBone rotates around the target's pivot. Reversed
   response curves reach full strength at the input minimum, turning a Motion off releases its target, and cheek
@@ -126,11 +137,11 @@ contains only the Orbit Asset Generator; Avatar Reactive Motion owns the
 canonical Eye Wobble component. `LilToonMaterialOverride` contains
 ProbeAnchorNormalizer.
 
-The source scope is the 13 generic Jeni tools currently present in MCP
-`Assets/Jeni_tool`; the public index contains 12 package IDs after the package 10
-retirement. The empty EyeWobble folder is excluded because the canonical
-implementation is in Avatar Reactive Motion. Outline, QVPenSigner, URLDisplay, Cazalis and
-CyberTranslucence/CyberpunkTransparentMaterials are separate future work.
+The source scope is the 13 generic Jeni tools originally mirrored from MCP
+`Assets/Jeni_tool`. Their read-only verification copies may now be embedded
+packages under the current or legacy IDs. The empty EyeWobble folder is excluded
+because the canonical implementation is in Avatar Reactive Motion.
+Outline, QVPenSigner, URLDisplay, and Cazalis are separate future work.
 
 If the project has scripts from a manual installation in `Assets/Jeni_tool/<tool>`,
 check the project copy for duplicate scripts. Remove only the old tool files;
