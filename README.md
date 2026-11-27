@@ -1,62 +1,42 @@
-# Personal VPM repository builder
+# Jeni Tools VPM repository
 
-`tools/build_vpm.py` packages the Jeni tools from the external `VRC_Tools` source of truth.
-For read-only verification and `.meta` fallback it uses the first existing copy in this order:
+This repository publishes the VCC/VPM catalog and release ZIPs. The builder,
+canonical `VRC_Tools` sources, Unity verification project, and metadata snapshots
+are in the maintainer's external workspace, not this checkout.
+See [the release checklist](#release-checklist) for what can be verified here.
+
+`tools/build_vpm.py` in that workspace builds from `VRC_Tools` into `dist-ready/`.
+For verification and missing `.meta` files, it uses the first existing copy in
 `MCP Project/Packages/com.jenitool.<tool>`, `MCP Project/Packages/com.suzuki-y0.jeni.<tool>`,
-then `MCP Project/Assets/Jeni_tool/<tool>`. As of 2026-11-25 the MCP Project still uses the
-legacy `com.suzuki-y0.jeni.*` embedded package IDs; the builder reports the resolved location
-and does not migrate, rename, or edit the project. Missing `.meta` GUIDs are taken from the
-resolved copy or from `metadata/`.
-It writes only to `dist-ready/`; it never edits or synchronizes the Unity project.
-The public index currently publishes 12 package IDs and 68 versions after
-retiring standalone package 10 (`liltoon-preset-applicator`) and the pre-unified
-`liltoon-material-override` `0.1.x` releases.
+or `MCP Project/Assets/Jeni_tool/<tool>`, with `metadata/` as a fallback for GUIDs.
+As of 2026-11-25, the MCP Project still uses the legacy embedded package IDs.
+The builder reports which copy it used and does not modify or migrate that project.
 
-```powershell
-# Build a release for one non-retired package:
-python tools/build_vpm.py --out dist-ready --package orbit --version 0.2.0
-python tools/verify_vpm.py dist-ready
-# A later release preserves all older non-retired index entries.
-```
-
-Each ZIP has a deterministic timestamp and is refused if the same package
-version already exists with different bytes. `dist-ready/index.json` is shaped for
-VCC/VPM. The public repository is [jeni-tools-vpm](https://github.com/szyey/jeni-tools-vpm),
-and its index is available at
-`https://raw.githubusercontent.com/szyey/jeni-tools-vpm/main/index.json`.
-The `liltoon-material-override` package has the latest unified `0.2.11` release
-containing the Preset Applicator sources, so new projects should install that
-one package. Version `0.2.6` also clarifies the single Material Override entry,
+The public index is `https://raw.githubusercontent.com/szyey/jeni-tools-vpm/main/index.json`.
+New projects should install the unified `liltoon-material-override` package,
+which contains the Preset Applicator. Version `0.2.6` clarifies the single Material Override entry,
 makes Preset optional in the creation window, and explains that Build-only saves
 the Avatar Root configuration while leaving existing Scene/Prefab assets untouched;
 Scene apply remains the explicit alternative before Scene Preview checks the lilToon package automatically.
 Standalone package 10 is retired and has no public index entries.
 
-The source-side static audit and staged Unity acceptance plan are documented in
+The historical source-side static audit and Unity acceptance plan are documented in
 [`TOOL_STATIC_AUDIT.md`](TOOL_STATIC_AUDIT.md).
 
-## Current versions (2026-11-27)
+## Current versions
 
-| Package | Latest |
-|---|---|
-| avatar-prefab-material-exporter | 0.1.2 |
-| avatar-reactive-motion | 0.1.4 |
-| avatar-variant-integrator | 0.1.5 |
-| avatar-y-offset | 0.1.5 |
-| cigarette | 0.1.2 |
-| eye-texture-adapter | 0.1.7 |
-| face-tracking-blendshape-composer | 0.1.6 |
-| facetra-prefab-exporter | 0.1.3 |
-| liltoon-material-override | 0.2.11 |
-| magic-ray | 0.1.5 |
-| mesh-deform-editor | 0.1.1 |
-| orbit | 0.2.4 |
+Use VCC or ALCOM to see the latest version for each package in the
+[published catalog](index.json).
 
 ## Release notes
 
-- **2026-11-27:** `eye-texture-adapter@0.1.7`. The tool is one tabbed window (Profile Maker and Transform) that opens on Profile Maker.
-  Profiles start from a two-eye or a one-eye texture; after the first eye, the second is mirrored by shape with or without adjusting.
-  Explanations are shorter and the save hint names the unfinished eye. Includes the 0.1.6 fix for warp meshes not being drawn.
+- **2026-11-27:** `eye-texture-adapter@0.1.7`. The tool is one tabbed window
+  (Profile Maker and Transform) that opens on Profile Maker. Profiles start from
+  a two-eye or one-eye texture; after the first eye, the second is mirrored by
+  shape with or without adjusting. Explanations are shorter and the save hint
+  names the unfinished eye. Includes the warp mesh fix from 0.1.6.
+- **2026-11-16:** `eye-texture-adapter@0.1.6`. Fixes warp meshes not being
+  drawn, which could make the converted texture fully transparent.
 - **2026-11-08:** `avatar-reactive-motion@0.1.4`. Transform motions merge into FX so they can read the VRCFT
   template's values; rotation uses quaternions and Generated PhysBone rotates around the target's pivot. Reversed
   response curves reach full strength at the input minimum, turning a Motion off releases its target, and cheek
@@ -100,19 +80,47 @@ The source-side static audit and staged Unity acceptance plan are documented in
 2. Add `https://raw.githubusercontent.com/szyey/jeni-tools-vpm/main/index.json`.
 3. Add the Jeni package you want to the project. Use the green update arrow when a newer release is available.
 
-ALCOM and VCC share the repository list. After adding the URL once, use ALCOM's
-project manager to install or update the package versions; the latest unified lilToon
-release is `com.jenitool.liltoon-material-override@0.2.11`. Since `0.2.0`, Orbit contains only
+The update arrow only applies to the same package ID. If a project uses
+`com.suzuki-y0.jeni.*`, follow the [migration steps below](#migrate-from-the-old-package-ids).
+
+After adding the URL, use the project manager to install or update packages.
+Since `0.2.0`, Orbit contains only
 the Orbit Asset Generator; Eye Wobble moved to Avatar Reactive Motion. The generic package menus use English,
 descriptive paths under `Tools/Jeni Tools` (with matching
 `GameObject`, `Assets/Create`, and `Jeni Tools` component roots where applicable).
 
 Register the NDMF, Modular Avatar, lilToon, and other external repositories in each project as needed.
 
+## Migrate from the old package IDs
+
+The current catalog uses `com.jenitool.*`. An old ID locked in
+`Packages/vpm-manifest.json` cannot be restored from this catalog. For packages
+listed in the current catalog, keep the suffix and replace `com.suzuki-y0.jeni.`
+with `com.jenitool.`. For example, `com.suzuki-y0.jeni.orbit` becomes
+`com.jenitool.orbit`. The [unified lilToon package](#liltoon-package-910-integration)
+is the exception for the retired Preset Applicator.
+
+1. Close Unity. Back up the entire project, including `Packages`, and work on
+   a copy. Do not delete the only installed copy of an old package: the old
+   release downloads may be unavailable.
+2. In VCC or ALCOM, note the old Jeni Tools packages in the copied project.
+   Remove them before adding their replacements. Remove old dependents such as
+   Avatar Reactive Motion and FaceTra Prefab Exporter before removing their old
+   Face Tracking Blendshape Composer dependency.
+3. Add the new IDs from the current catalog. The package manager will install
+   dependencies; confirm that no `com.suzuki-y0.jeni.*` entries remain in the
+   project's `Packages/vpm-manifest.json` or as installed packages.
+4. Open Unity only after the replacement packages are installed. Check for
+   compile errors and missing scripts, confirm that Scene and Prefab references
+   still resolve, and test the avatar build before replacing the original project.
+
+If the migration fails, keep using the backup with its installed packages;
+the current catalog is not an archive of the old IDs.
+
 ## lilToon package 9/10 integration
 
-`com.jenitool.liltoon-material-override@0.2.11` is the canonical unified
-release. It includes the former Preset Applicator Runtime and Editor sources
+`com.jenitool.liltoon-material-override` is the canonical unified
+package. It includes the former Preset Applicator Runtime and Editor sources
 under `Legacy/PresetApplicator/` and has no internal dependency on standalone
 package 10. Package 10 is retired and absent from the public index; migrate any
 project that still references that ID to package 9 `0.2.x` before resolving.
@@ -130,11 +138,33 @@ canonical Eye Wobble component. `LilToonMaterialOverride` contains
 ProbeAnchorNormalizer.
 
 The source scope is the 13 generic Jeni tools originally mirrored from MCP
-`Assets/Jeni_tool`; their read-only verification copies may now be embedded packages
-under the current or legacy package IDs. The public index contains 12 package IDs after
-the package 10 retirement. The empty EyeWobble folder is excluded because the canonical
-implementation is in Avatar Reactive Motion. Outline, QVPenSigner, URLDisplay, and Cazalis are separate future work.
+`Assets/Jeni_tool`. Their read-only verification copies may now be embedded
+packages under the current or legacy IDs. The empty EyeWobble folder is excluded
+because the canonical implementation is in Avatar Reactive Motion.
+Outline, QVPenSigner, URLDisplay, and Cazalis are separate future work.
 
-Before switching an existing project, back up and remove its old
-`Assets/Jeni_tool/<tool>` copy manually. No `legacyFolders` deletion is emitted,
-so installing a package cannot silently delete user assets.
+If the project has scripts from a manual installation in `Assets/Jeni_tool/<tool>`,
+check the project copy for duplicate scripts. Remove only the old tool files;
+keep generated assets and user files. VPM does not remove that folder automatically.
+
+## Release checklist
+
+1. Build in the external source workspace. Record its source revision and the
+   build tooling used in the GitHub release notes.
+2. Add the new ID/version to `index.json` and `release-manifest.json`. Before
+   publishing, run `python3 tools/check_catalog.py --zip-dir /path/to/built/zips`.
+   The verifier uses published ZIPs for versions not present in that directory.
+3. Commit the catalog entries before creating the `<package-id>-<version>` tag.
+   Publish the ZIP on that tag before merging the catalog PR so CI can verify
+   both the tag and the public download. Keep existing version entries and ZIP
+   bytes unchanged; if the bytes change, publish a new version.
+4. Verify installation and Unity import/build in a fresh project. The catalog
+   check does not replace Unity testing.
+
+Some historical tags predate their catalog entries. Use the current catalog
+and its checksums for those releases; do not move existing tags.
+
+## Usage terms
+
+This repository does not state license terms for its downloads. Contact the
+maintainer to confirm the terms that apply before redistributing or modifying them.

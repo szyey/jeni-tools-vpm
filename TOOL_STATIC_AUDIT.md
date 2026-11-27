@@ -3,6 +3,9 @@
 監査日: 2026-09-13  
 対象: VRC_Tools を正本とする汎用 Jeni Tools 13 source tools、公開 VPM index（package 10 retirement後の12 IDs・30 versions）、MCP Project の package コピー
 
+この文書は当時のスナップショットです。現行版と旧 ID の移行手順は
+[配布 README](README.md) を参照してください。
+
 ## 監査の境界
 
 この監査は Unity を新規起動せず、ソース、asmdef、package manifest、ZIP、既存の Editor.log、既存テスト計画を照合したものです。ソース対象は13系統で、公開 VPM package は package 10 のretirement後に12 IDsです。lilToon Material Override 0.2.6では、Preview開始前にlilToon 2.3.4のpackage/API markerを自動検査し、利用者向けPreflightメニューは露出していません。Build-onlyはAvatar Rootの設定コンポーネントを保存し、既存Scene/PrefabのMA Mesh Settings、Renderer、Material、Meshを変更しないことを案内しています。
